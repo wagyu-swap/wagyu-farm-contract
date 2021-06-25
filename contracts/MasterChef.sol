@@ -49,7 +49,7 @@ contract MasterChef is Ownable {
     // Dev address.
     address public devaddr;
     // WAGYU tokens created per block.
-    uint256 public wagyuPerBlock;
+    uint256 public wagyuPerBlock = 0.002 ether;
     // Bonus muliplier for early wagyu makers.
     uint256 public BONUS_MULTIPLIER = 1;
     // The migrator contract. It has a lot of power. Can only be set through governance (owner).
@@ -72,25 +72,22 @@ contract MasterChef is Ownable {
         WagyuToken _wagyu,
         SauceBar _sauce,
         address _devaddr,
-        uint256 _wagyuPerBlock,
         uint256 _startBlock
     ) {
-        wagyu = _wagyu;
+        wagyu = wagyu;
         sauce = _sauce;
         devaddr = _devaddr;
-        wagyuPerBlock = _wagyuPerBlock;
         startBlock = _startBlock;
 
         // staking pool
         poolInfo.push(PoolInfo({
-        lpToken : _wagyu,
-        allocPoint : 1000,
-        lastRewardBlock : startBlock,
-        accWagyuPerShare : 0
+            lpToken : _wagyu,
+            allocPoint : 1000,
+            lastRewardBlock : startBlock,
+            accWagyuPerShare : 0
         }));
 
         totalAllocPoint = 1000;
-
     }
 
     function updateMultiplier(uint256 multiplierNumber) public onlyOwner {
@@ -110,10 +107,10 @@ contract MasterChef is Ownable {
         uint256 lastRewardBlock = block.number > startBlock ? block.number : startBlock;
         totalAllocPoint = totalAllocPoint.add(_allocPoint);
         poolInfo.push(PoolInfo({
-        lpToken : _lpToken,
-        allocPoint : _allocPoint,
-        lastRewardBlock : lastRewardBlock,
-        accWagyuPerShare : 0
+            lpToken : _lpToken,
+            allocPoint : _allocPoint,
+            lastRewardBlock : lastRewardBlock,
+            accWagyuPerShare : 0
         }));
         updateStakingPool();
     }

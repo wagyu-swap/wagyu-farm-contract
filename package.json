@@ -1,16 +1,17 @@
 {
-  "name": "PancakeSwap",
+  "name": "@wagyuswap-libs/wagyu-farm-contract",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "migrate": "truffle migrate --network bscTestnet --reset",
-    "compile": "truffle compile --network bscTestnet",
+    "migrate": "truffle migrate --network velasDevNet --reset",
+    "compile": "truffle compile --network velasDevNet",
     "test": "npx builder test",
     "coverage": "npx builder coverage"
   },
   "dependencies": {
     "@openzeppelin/test-helpers": "^0.5.6",
     "@pancakeswap/pancake-swap-lib": "^0.0.1",
+    "@truffle/hdwallet-provider": "^1.4.0",
     "lightweight-charts": "^3.3.0",
     "truffle": "^5.1.58",
     "truffle-flattener": "^1.4.4"

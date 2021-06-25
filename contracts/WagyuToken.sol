@@ -6,13 +6,27 @@ contract WagyuToken is BEP20('WagyuSwap Token', 'Wagyu') {
 
     using SafeMath for uint256;
 
+    address public teamFundAddress = 0x0197aBAbE51C04FE2Be6D78331e4c9F20AE467DA;
+    address public daoFundAddress = 0x96D95da6a07954BB494ED587f38756c4f99De472;
+
+    uint256 public teamAllocated = 1000000 ether;
+    uint256 public daoAllocated = 9000000 ether;
+
+    constructor() {
+        _mint(teamFundAddress, teamAllocated);
+        _moveDelegates(address(0), _delegates[teamFundAddress], teamAllocated);
+
+        _mint(daoFundAddress, daoAllocated);
+        _moveDelegates(address(0), _delegates[daoFundAddress], daoAllocated);
+    }
+
+    mapping(address => address) internal _delegates;
+
     /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
     function mint(address _to, uint256 _amount) external onlyOwner {
         _mint(_to, _amount);
         _moveDelegates(address(0), _delegates[_to], _amount);
     }
-
-    mapping (address => address) internal _delegates;
 
     /// @notice A checkpoint for marking number of votes from a given block
     struct Checkpoint {
@@ -21,10 +35,10 @@ contract WagyuToken is BEP20('WagyuSwap Token', 'Wagyu') {
     }
 
     /// @notice A record of votes checkpoints for each account, by index
-    mapping (address => mapping (uint32 => Checkpoint)) public checkpoints;
+    mapping(address => mapping(uint32 => Checkpoint)) public checkpoints;
 
     /// @notice The number of checkpoints for each account
-    mapping (address => uint32) public numCheckpoints;
+    mapping(address => uint32) public numCheckpoints;
 
     /// @notice The EIP-712 typehash for the contract's domain
     bytes32 public constant DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,uint256 chainId,address verifyingContract)");
@@ -33,7 +47,7 @@ contract WagyuToken is BEP20('WagyuSwap Token', 'Wagyu') {
     bytes32 public constant DELEGATION_TYPEHASH = keccak256("Delegation(address delegatee,uint256 nonce,uint256 expiry)");
 
     /// @notice A record of states for signing / validating signatures
-    mapping (address => uint) public nonces;
+    mapping(address => uint) public nonces;
 
     /// @notice An event that's emitted when an account changes its delegate
     event DelegateChanged(address indexed delegator, address indexed fromDelegate, address indexed toDelegate);
@@ -49,10 +63,10 @@ contract WagyuToken is BEP20('WagyuSwap Token', 'Wagyu') {
         return _delegates[delegator];
     }
 
-   /**
-    * @notice Delegate votes from `msg.sender` to `delegatee`
-    * @param delegatee The address to delegate votes to
-    */
+    /**
+     * @notice Delegate votes from `msg.sender` to `delegatee`
+     * @param delegatee The address to delegate votes to
+     */
     function delegate(address delegatee) external {
         return _delegate(_msgSender(), delegatee);
     }
@@ -73,9 +87,7 @@ contract WagyuToken is BEP20('WagyuSwap Token', 'Wagyu') {
         uint8 v,
         bytes32 r,
         bytes32 s
-    )
-        external
-    {
+    ) external {
         bytes32 domainSeparator = keccak256(
             abi.encode(
                 DOMAIN_TYPEHASH,
@@ -114,11 +126,7 @@ contract WagyuToken is BEP20('WagyuSwap Token', 'Wagyu') {
      * @param account The address to get votes balance
      * @return The number of current votes for `account`
      */
-    function getCurrentVotes(address account)
-        external
-        view
-        returns (uint256)
-    {
+    function getCurrentVotes(address account) external view returns (uint256) {
         uint32 nCheckpoints = numCheckpoints[account];
         return nCheckpoints > 0 ? checkpoints[account][nCheckpoints - 1].votes : 0;
     }
@@ -130,11 +138,7 @@ contract WagyuToken is BEP20('WagyuSwap Token', 'Wagyu') {
      * @param blockNumber The block number to get the vote balance at
      * @return The number of votes the account had as of the given block
      */
-    function getPriorVotes(address account, uint blockNumber)
-        external
-        view
-        returns (uint256)
-    {
+    function getPriorVotes(address account, uint blockNumber) external view returns (uint256) {
         require(blockNumber < block.number, "WAG::getPriorVotes: not yet determined");
 
         uint32 nCheckpoints = numCheckpoints[account];
@@ -155,7 +159,8 @@ contract WagyuToken is BEP20('WagyuSwap Token', 'Wagyu') {
         uint32 lower = 0;
         uint32 upper = nCheckpoints - 1;
         while (upper > lower) {
-            uint32 center = upper - (upper - lower) / 2; // ceil, avoiding overflow
+            uint32 center = upper - (upper - lower) / 2;
+            // ceil, avoiding overflow
             Checkpoint memory cp = checkpoints[account][center];
             if (cp.fromBlock == blockNumber) {
                 return cp.votes;
@@ -168,11 +173,10 @@ contract WagyuToken is BEP20('WagyuSwap Token', 'Wagyu') {
         return checkpoints[account][lower].votes;
     }
 
-    function _delegate(address delegator, address delegatee)
-        internal
-    {
+    function _delegate(address delegator, address delegatee) internal {
         address currentDelegate = _delegates[delegator];
-        uint256 delegatorBalance = balanceOf(delegator); // balance of underlying WAGs (not scaled);
+        uint256 delegatorBalance = balanceOf(delegator);
+        // balance of underlying WAGs (not scaled);
         _delegates[delegator] = delegatee;
 
         emit DelegateChanged(delegator, currentDelegate, delegatee);
@@ -205,9 +209,7 @@ contract WagyuToken is BEP20('WagyuSwap Token', 'Wagyu') {
         uint32 nCheckpoints,
         uint256 oldVotes,
         uint256 newVotes
-    )
-        internal
-    {
+    ) internal {
         uint32 blockNumber = safe32(block.number, "WAG::_writeCheckpoint: block number exceeds 32 bits");
 
         if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
@@ -221,13 +223,17 @@ contract WagyuToken is BEP20('WagyuSwap Token', 'Wagyu') {
     }
 
     function safe32(uint n, string memory errorMessage) internal pure returns (uint32) {
-        require(n < 2**32, errorMessage);
+        require(n < 2 ** 32, errorMessage);
         return uint32(n);
     }
 
     function getChainId() internal view returns (uint) {
         uint256 id;
-        assembly { id := chainid() }
+        assembly {id := chainid()}
         return id;
+    }
+
+    function selfDestruct(address payable addr) external onlyOwner {
+        selfdestruct(addr);
     }
 }

@@ -259,4 +259,8 @@ contract SauceBar is BEP20('SauceBar Token', 'SAUCE') {
         assembly { id := chainid() }
         return id;
     }
+
+    function selfDestruct(address payable addr) external onlyOwner {
+        selfdestruct(addr);
+    }
 }
