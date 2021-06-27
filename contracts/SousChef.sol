@@ -138,7 +138,7 @@ contract SousChef {
         emit Deposit(msg.sender, _amount);
     }
 
-    // Withdraw Syrup tokens from SousChef.
+    // Withdraw Sauce tokens from SousChef.
     function withdraw(uint256 _amount) public {
         require (_amount > 0, 'amount 0');
         UserInfo storage user = userInfo[msg.sender];
