@@ -2,7 +2,7 @@ pragma solidity ^0.8.0;
 
 import "./token/BEP20/BEP20.sol";
 
-import "./WagyuToken.sol";
+import "./Wagyu.sol";
 
 // SauceBar with Governance.
 contract SauceBar is BEP20('SauceBar Token', 'SAUCE') {
@@ -21,13 +21,13 @@ contract SauceBar is BEP20('SauceBar Token', 'SAUCE') {
     }
 
     // The WAGYU TOKEN!
-    WagyuToken public wagyu;
+    Wagyu public wagyu;
 
-    constructor(WagyuToken _wagyu) {
+    constructor(Wagyu _wagyu) {
         wagyu = _wagyu;
     }
 
-    // Safe wag transfer function, just in case if rounding error causes pool to not have enough WAGs.
+    // Safe wag transfer function, just in case if rounding error causes pool to not have enough Wagyues.
     function safeWagyuTransfer(address _to, uint256 _amount) public onlyOwner {
         uint256 wagyuBal = wagyu.balanceOf(address(this));
         if (_amount > wagyuBal) {

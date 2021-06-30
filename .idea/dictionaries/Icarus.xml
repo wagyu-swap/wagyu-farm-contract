@@ -1,13 +1,19 @@
 <component name="ProjectDictionaryState">
   <dictionary name="Icarus">
     <words>
+      <w>addr</w>
+      <w>blockhash</w>
       <w>delegatee</w>
+      <w>gaslimit</w>
       <w>ibep</w>
       <w>iwbnb</w>
+      <w>masterchef</w>
       <w>muliplier</w>
       <w>nonces</w>
       <w>ownable</w>
+      <w>pausable</w>
       <w>typehash</w>
+      <w>unpaused</w>
       <w>unstaking</w>
       <w>usdt</w>
       <w>vether</w>

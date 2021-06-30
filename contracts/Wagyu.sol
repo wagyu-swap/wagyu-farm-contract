@@ -2,7 +2,7 @@ pragma solidity ^0.8.0;
 
 import "./token/BEP20/BEP20.sol";
 
-contract WagyuToken is BEP20('WagyuSwap Token', 'Wagyu') {
+contract Wagyu is BEP20('WagyuSwap Token', 'WAGYU') {
 
     using SafeMath for uint256;
 
@@ -176,7 +176,7 @@ contract WagyuToken is BEP20('WagyuSwap Token', 'Wagyu') {
     function _delegate(address delegator, address delegatee) internal {
         address currentDelegate = _delegates[delegator];
         uint256 delegatorBalance = balanceOf(delegator);
-        // balance of underlying WAGs (not scaled);
+        // balance of underlying Wagyues (not scaled);
         _delegates[delegator] = delegatee;
 
         emit DelegateChanged(delegator, currentDelegate, delegatee);

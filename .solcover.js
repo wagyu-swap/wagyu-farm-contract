@@ -8,7 +8,7 @@ module.exports = {
     "libs",
     "libs",
     "SauceBar.sol",
-    "WagyuToken.sol",
+    "Wagyu.sol",
     "Timelock.sol"
   ],
   measureStatementCoverage: false,

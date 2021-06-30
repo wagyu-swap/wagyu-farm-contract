@@ -5,7 +5,7 @@ import './token/BEP20/IBEP20.sol';
 import './token/BEP20/SafeBEP20.sol';
 import './access/Ownable.sol';
 
-import "./WagyuToken.sol";
+import "./Wagyu.sol";
 import "./SauceBar.sol";
 
 interface IMigratorChef {
@@ -43,7 +43,7 @@ contract MasterChef is Ownable {
     }
 
     // The WAGYU TOKEN!
-    WagyuToken public wagyu;
+    Wagyu public wagyu;
     // The SAUCE TOKEN!
     SauceBar public sauce;
     // Dev address.
@@ -69,7 +69,7 @@ contract MasterChef is Ownable {
     event EmergencyWithdraw(address indexed user, uint256 indexed pid, uint256 amount);
 
     constructor(
-        WagyuToken _wagyu,
+        Wagyu _wagyu,
         SauceBar _sauce,
         address _devaddr,
         uint256 _startBlock
@@ -300,7 +300,13 @@ contract MasterChef is Ownable {
 
     // Safe wagyu transfer function, just in case if rounding error causes pool to not have enough WAGYUes.
     function safeWagyuTransfer(address _to, uint256 _amount) internal {
-        sauce.safeWagyuTransfer(_to, _amount);
+//        sauce.safeWagyuTransfer(_to, _amount);
+        uint256 wagyuBal = wagyu.balanceOf(address(sauce));
+        if (_amount > wagyuBal) {
+            wagyu.transfer(_to, wagyuBal);
+        } else {
+            wagyu.transfer(_to, _amount);
+        }
     }
 
     // Update dev address by the previous dev.
