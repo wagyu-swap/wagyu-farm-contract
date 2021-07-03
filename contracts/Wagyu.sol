@@ -23,7 +23,7 @@ contract Wagyu is BEP20('WagyuSwap Token', 'WAGYU') {
     mapping(address => address) internal _delegates;
 
     /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
-    function mint(address _to, uint256 _amount) external onlyOwner {
+    function mintWagyu(address _to, uint256 _amount) external onlyOwner {
         _mint(_to, _amount);
         _moveDelegates(address(0), _delegates[_to], _amount);
     }

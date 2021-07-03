@@ -74,7 +74,7 @@ contract MasterChef is Ownable {
         address _devaddr,
         uint256 _startBlock
     ) {
-        wagyu = wagyu;
+        wagyu = _wagyu;
         sauce = _sauce;
         devaddr = _devaddr;
         startBlock = _startBlock;
@@ -198,8 +198,8 @@ contract MasterChef is Ownable {
         }
         uint256 multiplier = getMultiplier(pool.lastRewardBlock, block.number);
         uint256 wagyuReward = multiplier.mul(wagyuPerBlock).mul(pool.allocPoint).div(totalAllocPoint);
-        wagyu.mint(devaddr, wagyuReward.div(10));
-        wagyu.mint(address(sauce), wagyuReward);
+        wagyu.mintWagyu(devaddr, wagyuReward.div(10));
+        wagyu.mintWagyu(address(sauce), wagyuReward);
         pool.accWagyuPerShare = pool.accWagyuPerShare.add(wagyuReward.mul(1e12).div(lpSupply));
         pool.lastRewardBlock = block.number;
     }
@@ -300,13 +300,7 @@ contract MasterChef is Ownable {
 
     // Safe wagyu transfer function, just in case if rounding error causes pool to not have enough WAGYUes.
     function safeWagyuTransfer(address _to, uint256 _amount) internal {
-//        sauce.safeWagyuTransfer(_to, _amount);
-        uint256 wagyuBal = wagyu.balanceOf(address(sauce));
-        if (_amount > wagyuBal) {
-            wagyu.transfer(_to, wagyuBal);
-        } else {
-            wagyu.transfer(_to, _amount);
-        }
+        sauce.safeWagyuTransfer(_to, _amount);
     }
 
     // Update dev address by the previous dev.
