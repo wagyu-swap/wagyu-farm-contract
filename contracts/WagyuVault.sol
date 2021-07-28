@@ -10,8 +10,8 @@ import './utils/Pausable.sol';
 
 contract WagyuVault is Ownable, Pausable {
 
-    using SafeMath for uint256;
     using SafeBEP20 for IBEP20;
+    using SafeMath for uint256;
 
     struct UserInfo {
         uint256 shares; // number of shares for a user
@@ -88,7 +88,7 @@ contract WagyuVault is Ownable, Pausable {
      */
     modifier notContract() {
         require(!_isContract(msg.sender), "contract not allowed");
-        require(msg.sender == tx.origin, "proxy contract not allowed");
+//        require(msg.sender == tx.origin, "proxy contract not allowed");
         _;
     }
 

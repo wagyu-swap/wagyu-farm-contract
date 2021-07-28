@@ -198,8 +198,8 @@ contract MasterChef is Ownable {
         }
         uint256 multiplier = getMultiplier(pool.lastRewardBlock, block.number);
         uint256 wagyuReward = multiplier.mul(wagyuPerBlock).mul(pool.allocPoint).div(totalAllocPoint);
-        wagyu.mintWagyu(devaddr, wagyuReward.div(10));
-        wagyu.mintWagyu(address(sauce), wagyuReward);
+        wagyu.mint(devaddr, wagyuReward.div(10));
+        wagyu.mint(address(sauce), wagyuReward);
         pool.accWagyuPerShare = pool.accWagyuPerShare.add(wagyuReward.mul(1e12).div(lpSupply));
         pool.lastRewardBlock = block.number;
     }
